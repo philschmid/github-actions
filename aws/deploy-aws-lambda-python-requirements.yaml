@@ -1,0 +1,49 @@
+# This is a basic workflow deploying aws lambda function with serverless framework
+
+name: aws-lambda-deployment
+
+on:
+  # push:
+  #   branches: [ci]
+  # pull_request:
+  #   branches: [dev, master]
+  pull_request:
+    branches: [dev, master]
+    types: [closed]
+jobs:
+  deploy:
+    needs: test
+    name: deploy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x]
+    env:
+      working-directory: ./request_handler
+    steps:
+      - uses: actions/checkout@master
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies
+        working-directory: ${{ env.working-directory }}
+        run: npm install
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+      - name: Deployment for Stage Development
+        working-directory: ${{ env.working-directory }}
+        if: contains(github.base_ref, 'dev')
+        run: npm run-script deploy-dev
+      - name: Deployment for Stage Production
+        working-directory: ${{ env.working-directory }}
+        if: contains(github.base_ref, 'master')
+        run: npm run-script deploy-prod
