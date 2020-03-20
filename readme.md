@@ -2,8 +2,8 @@
 
 # AWS
 
-[Deploy AWS Lambda Python Runtime with Serverless Framework with Staging on PR closed](./aws/deploy-aws-lambda-python-requirements.yaml)
-[Deploy AWS Lambda Python with Unittests Runtime with Serverless Framework with Staging on PR closed](./aws/deploy-aws-lambda-with-unittest-python.yaml)
+[Deploy AWS Lambda Python Runtime with Serverless Framework with Staging on PR closed](./aws/deploy-aws-lambda-python-requirements.yaml)  
+[Deploy AWS Lambda Python with Unittests Runtime with Serverless Framework with Staging on PR closed](./aws/deploy-aws-lambda-with-unittest-python.yaml)  
 [Deploy App to s3 with cloudfront invalidation on PR closed](./aws/deploy-app-to-s3-with-cf-invalidation.yaml)
 
 # Python
