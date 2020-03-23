@@ -1,0 +1,65 @@
+name: deploy-to-s3
+
+on:
+  pull_request:
+    paths: 
+      - frontend/**
+    branches: [development, master]
+    types: [closed]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      AWS_S3_BUCKET_DEV: nbb-vg-hosting-bucket-application-dev
+      AWS_S3_BUCKET_PROD: nbb-vg-hosting-bucket-application-prod
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+      - uses: actions/checkout@master
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Dependencies
+        working-directory: ${{ env.working-directory }}
+        run: |
+          cd frontend
+          npm install
+      - name: Build Application in development
+        if: contains(github.base_ref, 'development')
+        run: |
+          cd frontend
+          npm run-script build-dev
+      - name: Build Application in production
+        if: contains(github.base_ref, 'master')
+        run: |
+          cd frontend
+          npm run-script build-prod
+      - uses: jakejarvis/s3-sync-action@master
+        if: contains(github.base_ref, 'development')
+        name: Upload App to Development Stage
+        with:
+          args: --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ env.AWS_S3_BUCKET_DEV }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
+          AWS_REGION: "eu-west-1"
+          SOURCE_DIR: "frontend/dist/nbb-frontend"
+      - uses: jakejarvis/s3-sync-action@master
+        if: contains(github.base_ref, 'master')
+        name: Upload App to Production Stage
+        with:
+          args: --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: ${{ env.AWS_S3_BUCKET_PROD }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.SECRET_ACCESS_KEY }}
+          AWS_REGION: "eu-west-1"
+          SOURCE_DIR: "frontend/dist/nbb-frontend"
