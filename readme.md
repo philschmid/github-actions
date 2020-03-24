@@ -6,6 +6,7 @@
 [Deploy AWS Lambda Python with Unittests Runtime with Serverless Framework with Staging on PR closed](./aws/deploy-aws-lambda-with-unittest-python.yaml)  
 [Deploy App to s3 with cloudfront invalidation on PR closed](./aws/deploy-app-to-s3-with-cf-invalidation.yaml)             
 [Deploy Angular App to s3 on PR closed](./aws/deploy-angular-app-to-s3.yml)
+[Deploy Angular App to s3 on PR closed](./typescript/ci-unittest-jest.yml)
 
 # Python
 
