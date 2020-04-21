@@ -12,6 +12,12 @@
 
 [Run Python Unittests on PR Open with boto3](./python/run-unittest-on-pr-open.yaml)
 
+# MS Teams 
+
+[Send MS Teams message](./send-ms-teams-message.yaml)
+
+
+
 # More Awesome Community Actions
 
 [Link to awesome-actions repository](https://github.com/sdras/awesome-actions)
