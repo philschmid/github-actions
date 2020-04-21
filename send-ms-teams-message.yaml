@@ -1,0 +1,21 @@
+name: send-team-message
+on:
+  push:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [10.x]
+    steps:
+      - name: Send a message to Microsoft Teams
+        if: always()
+        uses: aliencube/microsoft-teams-actions@v0.8.0
+        with:
+          webhook_uri: ${{ secrets.MS_TEAMS_WEBHOOK }}
+          title: Deploy der Action ${{github.workflow}}
+          summary: "GitHub Actions Message"
+          text: "commit message: \n ${{github.event.head_commit.message}}"
+          theme_color: "4BB543"
+          sections: '[{ "activityImage": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png", "activityTitle": "GitHub Action invoked",  "activitySubtitle": "Event triggered by ${{ github.event.head_commit.author.name }}", "activityText": "Repository: ${{github.repository}}" ,"facts": [{  "name": "Status", "value": "${{ job.status }}" },{ "name": "Datum", "value": "${{github.event.head_commit.timestamp}}"} ,{"name": "Developers","value": "${{github.actor}}" } ] }]'
+          actions: '[{ "@type": "OpenUri", "name": "View Push", "targets": [{ "os": "default", "uri": "${{ github.event.head_commit.url }}" }] },{ "@type": "OpenUri", "name": "View Repository", "targets": [{ "os": "default", "uri": "${{ github.event.repository.url }}" }] }]'
