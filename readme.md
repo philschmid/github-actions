@@ -15,7 +15,7 @@
 # MS Teams 
 
 [Send MS Teams message](./send-ms-teams-message.yaml)
-[Send MS Teams message](./teamsfoto.png)
+![Send MS Teams message](./teamsfoto.png)
 
 
 
